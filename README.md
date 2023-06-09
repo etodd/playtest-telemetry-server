@@ -1,4 +1,4 @@
-# Playtest Telemetry
+# Playtest Telemetry Server
 
 A Go server for collecting playtest telemetry.
 
