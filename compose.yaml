@@ -2,9 +2,7 @@ version: '3'
 
 services:
   go-server:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: etodd/playtest-telemetry-server:latest
     expose:
       - "8000"
     restart: unless-stopped
