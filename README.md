@@ -1,6 +1,10 @@
 # Playtest Telemetry
 
-A Go server for receiving playtest telemetry from Godot.
+A Go server for receiving playtest telemetry.
+
+## SDKs
+
+- [Godot](https://github.com/etodd/playtest-telemetry-godot)
 
 ## Setup
 
