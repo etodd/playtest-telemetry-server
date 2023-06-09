@@ -1,6 +1,6 @@
 # Playtest Telemetry
 
-A Go server for receiving playtest telemetry.
+A Go server for collecting playtest telemetry.
 
 ## SDKs
 
