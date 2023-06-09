@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  go-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    expose:
+      - "8000"
+    restart: unless-stopped
+    environment:
+      DATA_DIR: /data
+      USERNAME: ${USERNAME}
+      PASSWORD: ${PASSWORD}
+      API_KEY: ${API_KEY}
+    volumes:
+      - data:/data
+
+  caddy:
+    image: caddy:2.6-alpine
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - go-server
+    restart: unless-stopped
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    command: caddy reverse-proxy --from ${DOMAIN} --to go-server:8000
+
+volumes:
+  data:
+  caddy_data:
+  caddy_config:
