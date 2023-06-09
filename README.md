@@ -12,8 +12,20 @@ A Go server for collecting playtest telemetry.
 
 2. Install Docker and curl.
 
-3. Run these commands, inserting your desired credentials:
+3. Download the docker compose file:
 	```
 	curl -o compose.yaml https://raw.githubusercontent.com/etodd/playtest-telemetry-server/main/compose.yaml
-    USERNAME=<username> PASSWORD=<password> API_KEY=<key> DOMAIN=<example.com> docker-compose up -d
+	```
+
+4. Create a `.env` file containing your desired credentials:
+	```
+	USERNAME=<username>
+	PASSWORD=<password>
+	API_KEY=<key>
+	DOMAIN=<example.com> 
+	```
+
+5. Run the server:
+	```
+    docker-compose up -d
 	```
