@@ -2,6 +2,23 @@
 <html>
 <head>
     <title>Playtest Telemetry</title>
+    <style>
+    html {
+        font-family: sans-serif;
+    }
+    @media (prefers-color-scheme: dark) {
+        body {
+            background-color: #333;
+            color: #fff;
+        }
+        a {
+            color: #adf;
+        }
+        a:visited {
+            color: #faf;
+        }
+    }
+    </style>
     <script>
         function req(path, body, callback) {
             fetch(path, {
@@ -41,7 +58,7 @@
             <tr>
                 <td>{{ $version.Version }}</td>
                 <td><a href="/download?version={{ $version.Version }}">{{ $version.FileCount }} files</td>
-                <td><a href="#" onclick="req('/clear', { version: '{{ $version.Version }}' }, function() { location.reload(); })">Clear</td>
+                <td><a href="#{{ $version.Version }}" onclick="req('/clear', { version: '{{ $version.Version }}' }, function() { location.reload(); })">Clear</td>
             </tr>
         {{- end }}
     {{- else }}
