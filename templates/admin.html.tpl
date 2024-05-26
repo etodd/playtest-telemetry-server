@@ -57,8 +57,8 @@
         {{- range $_, $version := .Versions }}
             <tr>
                 <td>{{ $version.Version }}</td>
-                <td><a href="telemetry/download?version={{ $version.Version }}">{{ $version.FileCount }} files</td>
-                <td><a href="#{{ $version.Version }}" onclick="req('telemetry/clear', { version: '{{ $version.Version }}' }, function() { location.reload(); })">Clear</td>
+                <td><a href="/admin/telemetry/download?version={{ $version.Version }}">{{ $version.FileCount }} files</td>
+                <td><a href="#{{ $version.Version }}" onclick="req('/admin/telemetry/clear', { version: '{{ $version.Version }}' }, function() { location.reload(); })">Clear</td>
             </tr>
         {{- end }}
     {{- else }}
