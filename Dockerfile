@@ -5,7 +5,7 @@ COPY go.mod go.sum ./
 # no dependencies, so this line is currently unnecessary (and crashes)
 #RUN go mod download
 
-COPY *.go *.tpl ./
+COPY *.go templates ./
 RUN CGO_ENABLED=0 go build -o server .
 
 FROM alpine:3.18
