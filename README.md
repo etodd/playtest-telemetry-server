@@ -19,10 +19,10 @@ A Go server for collecting playtest telemetry.
 
 4. Create a `.env` file containing your desired credentials:
 	```
-	USERNAME=<username>
-	PASSWORD=<password>
-	API_KEY=<key>
-	DOMAIN=<example.com> 
+	PLAYTEST_USERNAME=<username>
+	PLAYTEST_PASSWORD=<password>
+	PLAYTEST_API_KEY=<key>
+	PLAYTEST_DOMAIN=<example.com> 
 	```
 
 5. Run the server:

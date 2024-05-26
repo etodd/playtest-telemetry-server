@@ -1,4 +1,4 @@
-FROM golang:1.20-alpine AS builder
+FROM golang:1.22-alpine AS builder
 WORKDIR /app
 
 COPY go.mod go.sum ./
@@ -6,7 +6,7 @@ COPY go.mod go.sum ./
 #RUN go mod download
 
 COPY *.go *.tpl ./
-RUN go build -o server .
+RUN CGO_ENABLED=0 go build -o server .
 
 FROM alpine:3.18
 

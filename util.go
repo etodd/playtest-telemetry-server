@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"slices"
 )
 
 func httpError(w http.ResponseWriter, code int, err error) {
@@ -37,5 +38,7 @@ func listDir(dir string) ([]string, error) {
 	for _, file := range files {
 		result = append(result, file.Name())
 	}
+	// sort by filename descending
+	slices.Reverse(result)
 	return result, nil
 }

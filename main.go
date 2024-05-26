@@ -1,58 +1,83 @@
 package main
 
 import (
-	_ "embed"
+	"embed"
 	"html/template"
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 )
 
 const maxPayloadBytes = 10_000_000 // 10 MB
 
-//go:embed index.html.tpl
-var indexHTML string
-var indexTemplate = template.Must(template.New("index").Parse(indexHTML))
+//go:embed templates
+var templateFS embed.FS
+var templates = template.Must(template.ParseFS(templateFS, "templates/*"))
 
-var dataDir = getEnv("DATA_DIR", "data")
+var dataDir = getEnv("PLAYTEST_DATA_DIR", "data")
+var buildsDir = filepath.Join(dataDir, "builds")
+var telemetryDir = filepath.Join(dataDir, "telemetry")
 
 func main() {
 	if err := setup(); err != nil {
 		log.Fatal(err)
 	}
-	basicAuth := basicAuthMiddleware(getEnv("USERNAME", "admin"), getEnv("PASSWORD", "password"))
-	bearerAuth := bearerAuthMiddleware(getEnv("API_KEY", "testkey"))
+	basicAuth := basicAuthMiddleware(getEnv("PLAYTEST_USERNAME", "admin"), getEnv("PLAYTEST_PASSWORD", "password"))
+	bearerAuth := bearerAuthMiddleware(getEnv("PLAYTEST_API_KEY", "testkey"))
 
-	http.Handle("/", middlewareStack(
+	http.Handle("/admin", middlewareStack(
 		logRequests,
 		requireMethod(http.MethodGet),
 		basicAuth,
-	).WrapFunc(index))
+	).WrapFunc(admin))
 
-	http.Handle("/download", middlewareStack(
-		logRequests,
-		requireMethod(http.MethodGet),
-		basicAuth,
-	).WrapFunc(download))
-
-	http.Handle("/clear", middlewareStack(
+	http.Handle("/admin/builds/", middlewareStack(
 		logRequests,
 		requireMethod(http.MethodPost),
 		basicAuth,
-	).WrapFunc(clear))
+	).WrapFunc(adminBuildsUpload))
 
-	http.Handle("/upload", middlewareStack(
+	http.Handle("/admin/telemetry/download", middlewareStack(
+		logRequests,
+		requireMethod(http.MethodGet),
+		basicAuth,
+	).WrapFunc(adminTelemetryDownload))
+
+	http.Handle("/admin/telemetry/clear", middlewareStack(
+		logRequests,
+		requireMethod(http.MethodPost),
+		basicAuth,
+	).WrapFunc(adminTelemetryClear))
+
+	http.Handle("/telemetry", middlewareStack(
 		logRequests,
 		requireMethod(http.MethodPost),
 		bearerAuth,
 		limitPayloadMiddleware(maxPayloadBytes),
-	).WrapFunc(upload))
+	).WrapFunc(telemetry))
+
+	http.Handle("/", middlewareStack(
+		logRequests,
+		requireMethod(http.MethodGet),
+	).WrapFunc(index))
+
+	http.Handle("/builds/", middlewareStack(
+		logRequests,
+		requireMethod(http.MethodGet),
+	).WrapFunc(buildsDownload))
 
 	http.ListenAndServe(getEnv("LISTEN_ADDR", ":8000"), nil)
 }
 
 func setup() error {
 	if err := os.MkdirAll(dataDir, os.ModePerm); err != nil {
+		return err
+	}
+	if err := os.MkdirAll(telemetryDir, os.ModePerm); err != nil {
+		return err
+	}
+	if err := os.MkdirAll(buildsDir, os.ModePerm); err != nil {
 		return err
 	}
 	return nil

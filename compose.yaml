@@ -7,10 +7,10 @@ services:
       - "8000"
     restart: unless-stopped
     environment:
-      DATA_DIR: /data
-      USERNAME: ${USERNAME}
-      PASSWORD: ${PASSWORD}
-      API_KEY: ${API_KEY}
+      PLAYTEST_DATA_DIR: /data
+      PLAYTEST_USERNAME: ${PLAYTEST_USERNAME:-}
+      PLAYTEST_PASSWORD: ${PLAYTEST_PASSWORD:-}
+      PLAYTEST_API_KEY: ${PLAYTEST_API_KEY:-}
     volumes:
       - data:/data
 
@@ -25,7 +25,7 @@ services:
     volumes:
       - caddy_data:/data
       - caddy_config:/config
-    command: caddy reverse-proxy --from ${DOMAIN} --to go-server:8000
+    command: caddy reverse-proxy --from ${PLAYTEST_DOMAIN} --to go-server:8000
 
 volumes:
   data:
